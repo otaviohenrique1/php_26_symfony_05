@@ -38,9 +38,9 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         # - { path: ^/series, roles: ROLE_USER }
         # ^/series$  => somente series
-        - { path: ^/series$, roles: PUBLIC_ACCESS }
+        - { path: ^/en|pt_BR/series$, roles: PUBLIC_ACCESS }
         # ^/(?!login|register) => Qualquer url, menos a de logim e de cadastro
-        - { path: ^/(?!login|register), roles: ROLE_USER }
+        - { path: ^/en|pt_BR/(?!login|register), roles: ROLE_USER }
 
 when@test:
     security:

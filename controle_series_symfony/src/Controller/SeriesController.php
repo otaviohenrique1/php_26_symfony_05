@@ -25,6 +25,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 // use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SeriesController extends AbstractController
 {
@@ -33,6 +34,7 @@ class SeriesController extends AbstractController
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $messenger,
         private SluggerInterface $slugger,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -95,9 +97,11 @@ class SeriesController extends AbstractController
 
         $this->messenger->dispatch(new SeriesWasCreated($series));
         
-        $this->addFlash('success', "Série \"{$series->getName()}\" adicionada com sucesso");
+        // $this->addFlash('success', "Série \"{$series->getName()}\" adicionada com sucesso");
+        $this->addFlash('success', $this->translator->trans('series.added.msg', ['name' => $series->getName()]));
 
-        return new RedirectResponse(url: '/series');
+        // return new RedirectResponse(url: '/series');
+        return $this->redirectToRoute('app_series');
     }
 
     #[Route(
@@ -113,10 +117,12 @@ class SeriesController extends AbstractController
         // $this->seriesRepository->remove($series, flush: true);
         $this->seriesRepository->remove($series, true);
         $this->messenger->dispatch(new SeriesWasDeleted($series));
-        $this->addFlash('success', 'Série removida com sucesso');
+        // $this->addFlash('success', 'Série removida com sucesso');
+        $this->addFlash('success', $this->translator->trans('series.delete'));
         // $session = $request->getSession();
         // $session->set('success', 'Série removida com sucesso');
-        return new RedirectResponse(url: '/series');
+        // return new RedirectResponse(url: '/series');
+        return $this->redirectToRoute('app_series');
     }
 
     #[Route('/series/edit/{series}', name: 'app_edit_series_form', methods: ['GET'])]
@@ -143,7 +149,8 @@ class SeriesController extends AbstractController
         // $request->getSession()->set('success', "Série \"{$series->getName()}\" editada com sucesso");
         $this->addFlash('success', "Série \"{$series->getName()}\" editada com sucesso");
         $this->entityManager->flush();
-        return new RedirectResponse(url: '/series');
+        // return new RedirectResponse(url: '/series');
+        return $this->redirectToRoute('app_series');
     }
 
 }
